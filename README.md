@@ -1,4 +1,4 @@
-# Quark: An AR Elementary Physics App – Backend (Brief Description)
+# Quark: An AR Elementary Physics App – Backend
 
 This backend system supports Quark, an Augmented Reality (AR) elementary physics learning application developed for academic research purposes. The infrastructure is built using Supabase, leveraging its PostgreSQL database, authentication services, storage, and Edge Functions for server-side logic.
 
