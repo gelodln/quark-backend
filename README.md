@@ -1,0 +1,1 @@
+This repository contains the backend implementation of an Augmented Reality (AR)–based elementary physics learning application, Quark. The backend is built using Supabase, leveraging its PostgreSQL database, authentication system, storage service, and Edge Functions for server-side logic.
