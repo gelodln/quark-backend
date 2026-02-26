@@ -4,7 +4,7 @@ SET session_replication_role = replica;
 -- PostgreSQL database dump
 --
 
--- \restrict EMGrqDXiJwLJaZ5XochCfvONn3vOjZcn4bvAN9p3fHZY7ahs3fJFZ7deWydp6xL
+-- \restrict PeiKv6BSV4yR6aH3O4eDjoCayrlDAWKp4UOXHJR8YYvRXKPbNQaEJT437lZH905
 
 -- Dumped from database version 17.6
 -- Dumped by pg_dump version 17.6
@@ -217,8 +217,8 @@ INSERT INTO "public"."topic" ("topic_name", "topic_id") VALUES
 -- Data for Name: user; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO "public"."user" ("user_id", "created_at", "role_id") VALUES
-	('b34fd64e-295f-41f0-a338-0f0c073f1cd4', '2026-02-19 18:53:17.339288+00', 2);
+INSERT INTO "public"."user" ("user_id", "created_at", "role_id", "email") VALUES
+	('b34fd64e-295f-41f0-a338-0f0c073f1cd4', '2026-02-19 18:53:17.339288+00', 2, 'gelo@up.edu.ph');
 
 
 --
@@ -310,6 +310,6 @@ SELECT pg_catalog.setval('"auth"."refresh_tokens_id_seq"', 17, true);
 -- PostgreSQL database dump complete
 --
 
--- \unrestrict EMGrqDXiJwLJaZ5XochCfvONn3vOjZcn4bvAN9p3fHZY7ahs3fJFZ7deWydp6xL
+-- \unrestrict PeiKv6BSV4yR6aH3O4eDjoCayrlDAWKp4UOXHJR8YYvRXKPbNQaEJT437lZH905
 
 RESET ALL;

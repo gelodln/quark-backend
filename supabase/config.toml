@@ -393,3 +393,113 @@ entrypoint = "./functions/scenes-create/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/scenes-create/*.html" ]
+
+[functions.scenes-update]
+enabled = true
+verify_jwt = false
+import_map = "./functions/scenes-update/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/scenes-update/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/scenes-update/*.html" ]
+
+[functions.scenes-set-criteria]
+enabled = true
+verify_jwt = false
+import_map = "./functions/scenes-set-criteria/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/scenes-set-criteria/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/scenes-set-criteria/*.html" ]
+
+[functions.auth-login]
+enabled = true
+verify_jwt = false
+import_map = "./functions/auth-login/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/auth-login/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/auth-login/*.html" ]
+
+[functions.auth-register]
+enabled = true
+verify_jwt = false
+import_map = "./functions/auth-register/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/auth-register/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/auth-register/*.html" ]
+
+[functions.scenes-publish]
+enabled = true
+verify_jwt = false
+import_map = "./functions/scenes-publish/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/scenes-publish/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/scenes-publish/*.html" ]
+
+[functions.scenes-load]
+enabled = true
+verify_jwt = false
+import_map = "./functions/scenes-load/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/scenes-load/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/scenes-load/*.html" ]
+
+[functions.attempts-start]
+enabled = true
+verify_jwt = false
+import_map = "./functions/attempts-start/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/attempts-start/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/attempts-start/*.html" ]
+
+[functions.attempts-complete]
+enabled = true
+verify_jwt = false
+import_map = "./functions/attempts-complete/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/attempts-complete/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/attempts-complete/*.html" ]
+
+[functions.scenes-save-freebuild]
+enabled = true
+verify_jwt = false
+import_map = "./functions/scenes-save-freebuild/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/scenes-save-freebuild/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/scenes-save-freebuild/*.html" ]
+
+[functions.scenes-load-by-code]
+enabled = true
+verify_jwt = false
+import_map = "./functions/scenes-load-by-code/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/scenes-load-by-code/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/scenes-load-by-code/*.html" ]

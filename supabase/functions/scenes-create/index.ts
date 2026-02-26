@@ -1,59 +1,37 @@
-// deno-lint-ignore-file
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { AuthMiddleware } from "../_shared/jwt/default.ts";
-import * as jose from "jsr:@panva/jose@6";
+import { corsHeaders, camelToSnake } from '../_shared/util.ts';
+import { verifyUser, authorizeRole, getAdminClient } from '../_shared/auth.ts';
 
-Deno.serve((req) =>
-  AuthMiddleware(req, async (request) => {
-    try {
-      // Method Check
-      if (request.method !== "POST") {
-        return Response.json({ error: "Method Not Allowed" }, { status: 405 });
-      }
-
-      // Get User ID from the already-verified JWT
-      const authHeader = request.headers.get("Authorization")!;
-      const token = authHeader.replace("Bearer ", "");
-      const payload = jose.decodeJwt(token);
-      const userId = payload.sub; // 'sub' is the User ID in Supabase JWTs
-
-      // Parse Request Body
-      const body = await request.json();
-      const { topicId, sceneType, title, description } = body;
-
-      if (!topicId || !sceneType) {
-        return Response.json({ error: "Missing required fields" }, { status: 400 });
-      }
-
-      // Create ADMIN client (using internal kong:8000 URL)
-      const adminClient = createClient(
-        Deno.env.get("SUPABASE_URL")!,
-        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-      );
-
-      // Adds the created scene to the database
-      const { data, error } = await adminClient
-        .from("scene")
-        .insert({
-          owner_id: userId,
-          topic_id: topicId,
-          scene_type: sceneType,
-          title,
-          description,
-        })
-        .select()
-        .single();
-
-      if (error) {
-        return Response.json({ error: error.message }, { status: 400 });
-      }
-
-      // Success
-      return Response.json(data, { status: 200 });
-
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Internal Server Error";
-      return Response.json({ error: message }, { status: 500 });
+Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  
+  try {
+    const user = await verifyUser(req);
+    console.log(user);
+    const body = await req.json();
+    
+    if (body.sceneType === 'level') {
+      authorizeRole(user.role, 'instructor');
     }
-  })
-);
+
+    const supabaseAdmin = getAdminClient();
+    const dbPayload = camelToSnake({ ...body, ownerId: user.id });
+
+    const { data, error } = await supabaseAdmin
+      .from('scene')
+      .insert([dbPayload])
+      .select('scene_id, scene_type, topic_id, created_at')
+      .single();
+
+    if (error) throw error;
+
+    const response = [{
+      sceneId: data.scene_id,
+      sceneType: data.scene_type,
+      topicId: data.topic_id,
+      createdAt: data.created_at
+    }];
+    return new Response(JSON.stringify(response), { status: 201, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+  } catch (err) {
+    return new Response(JSON.stringify({ error: (err instanceof Error) ? err.message : "An unknown error occurred." }), { status: 400, headers: { ...corsHeaders } }) ;
+  }
+});
