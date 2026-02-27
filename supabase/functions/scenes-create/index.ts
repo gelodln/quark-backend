@@ -2,20 +2,25 @@ import { corsHeaders, camelToSnake } from '../_shared/util.ts';
 import { verifyUser, authorizeRole, getAdminClient } from '../_shared/auth.ts';
 
 Deno.serve(async (req) => {
+  // CORS Stuff
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   
   try {
+    // Verify User Token
     const user = await verifyUser(req);
-    console.log(user);
+
+    // Parse Request Body
     const body = await req.json();
     
     if (body.sceneType === 'level') {
       authorizeRole(user.role, 'instructor');
     }
 
+    // Get Admin Client for Admin Privileges
     const supabaseAdmin = getAdminClient();
-    const dbPayload = camelToSnake({ ...body, ownerId: user.id });
+    const dbPayload = camelToSnake({ ...body, ownerId: user.id }); // Utility function
 
+    // Insert Scene to Database
     const { data, error } = await supabaseAdmin
       .from('scene')
       .insert([dbPayload])
@@ -24,6 +29,7 @@ Deno.serve(async (req) => {
 
     if (error) throw error;
 
+    // Success Response
     const response = [{
       sceneId: data.scene_id,
       sceneType: data.scene_type,

@@ -3,14 +3,21 @@ import { verifyUser, getAdminClient } from '../_shared/auth.ts';
 
 // URL: functions/v1/scenes-load/[scene_id]
 Deno.serve(async (req) => {
+  // CORS Stuff
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
   try {
+    // Verify User Token
     const user = await verifyUser(req);
+
+    // Parse URL to get Scene ID
     const url = new URL(req.url);
     const sceneId = url.pathname.split('/').pop();
+    
+    // Get Admin Client for Admin Privileges
     const supabaseAdmin = getAdminClient();
 
+    // Get Scene Data from Database
     const { data, error } = await supabaseAdmin
       .from('scene')
       .select('scene_id, scene_type, topic_id, scene_data, updated_at')
@@ -20,6 +27,7 @@ Deno.serve(async (req) => {
 
     if (error || !data) return new Response('Not Found', { status: 404, headers: corsHeaders });
 
+    // Success Response
     return new Response(JSON.stringify([{
       sceneId: data.scene_id,
       sceneType: data.scene_type,

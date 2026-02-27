@@ -2,23 +2,23 @@ import { corsHeaders } from '../_shared/util.ts'
 import { getAdminClient } from '../_shared/auth.ts';
 
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
-  }
+  // CORS Stuff
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
-  const supabase = getAdminClient()
+  // Get Admin Client for Admin Privileges
+  const supabaseAdmin = getAdminClient()
   let createdAuthUserId: string | null = null
 
   try {
+    // Parse Request Body
     const { email, password, roleName } = await req.json()
 
     if (!email || !password || !roleName) {
       throw new Error('MISSING_FIELDS')
     }
 
-    // Step 1: Create user in Supabase Auth
-    // We bypass email verification (email_confirm: true) for this admin flow.
-    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+    // Create User in Supabase Auth
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
       user_metadata: { role: roleName.toLowerCase() },
@@ -32,9 +32,8 @@ Deno.serve(async (req) => {
 
     createdAuthUserId = authData.user.id
 
-    // Step 2: Role Lookup
-    // Case-sensitive lookup: 'Instructor' or 'Learner'
-    const { data: roleData, error: roleError } = await supabase
+    // Verify Role
+    const { data: roleData, error: roleError } = await supabaseAdmin
       .from('role')
       .select('role_id')
       .eq('role_name', roleName)
@@ -44,8 +43,8 @@ Deno.serve(async (req) => {
       throw new Error('INVALID_ROLE')
     }
 
-    // Step 3: Relational Profile Creation
-    const { error: profileError } = await supabase
+    // Insert User to Database
+    const { error: profileError } = await supabaseAdmin
       .from('user')
       .insert({
         user_id: authData.user.id, // UUID from Auth
@@ -55,6 +54,7 @@ Deno.serve(async (req) => {
 
     if (profileError) throw profileError
 
+    // Success Response
     return new Response(
       JSON.stringify({ user_id: authData.user.id }),
       { 
@@ -64,9 +64,9 @@ Deno.serve(async (req) => {
     )
 
   } catch (err) {
-    // Atomicity Protection: Rollback Auth User if relational insert fails
+    // Rollback Supabase Auth User if Database insert fails
     if (createdAuthUserId) {
-      await supabase.auth.admin.deleteUser(createdAuthUserId)
+      await supabaseAdmin.auth.admin.deleteUser(createdAuthUserId)
     }
 
     const errorMap: Record<string, { status: number; message: string }> = {

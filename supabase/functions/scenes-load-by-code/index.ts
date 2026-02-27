@@ -3,12 +3,17 @@ import { getAdminClient } from '../_shared/auth.ts';
 
 // URL: functions/v1/scenes-load-by-code?accessCode=[access-code]
 Deno.serve(async (req) => {
+  // CORS Stuff
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
+  // Parse URL to get Access Code
   const url = new URL(req.url);
   const accessCode = url.searchParams.get('accessCode');
+    
+  // Get Admin Client for Admin Privileges
   const supabaseAdmin = getAdminClient();
 
+  // Get Scene Data from Database
   const { data, error } = await supabaseAdmin
     .from('scene_access')
     .select(`
@@ -25,6 +30,7 @@ Deno.serve(async (req) => {
   if (error || !data) return new Response('Not Found', { status: 404, headers: corsHeaders });
   if (data.expires_at && new Date(data.expires_at) < new Date()) return new Response('Expired', { status: 403, headers: corsHeaders });
  
+  // Success Response
   const scene = data.scene as any;
   const result = [{
     sceneId: scene.scene_id,

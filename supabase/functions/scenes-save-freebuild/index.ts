@@ -2,14 +2,23 @@ import { corsHeaders } from '../_shared/util.ts';
 import { verifyUser, authorizeRole, getAdminClient } from '../_shared/auth.ts';
 
 Deno.serve(async (req) => {
+  // CORS Stuff
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
   try {
+    // Verify User Token
     const user = await verifyUser(req);
+
+    // Verify User is an Learner
     authorizeRole(user.role, 'learner');
+
+    // Parse Request Body
     const { sceneId, sceneData } = await req.json();
+
+    // Get Admin Client for Admin Privileges
     const supabaseAdmin = getAdminClient();
 
+    // Update Scene Data (Freebuild)
     const { data, error } = await supabaseAdmin
       .from('scene')
       .update({ scene_data: sceneData })
@@ -21,6 +30,7 @@ Deno.serve(async (req) => {
 
     if (error || !data) return new Response('Unauthorized or Not Freebuild', { status: 403, headers: corsHeaders });
 
+    // Success Response
     return new Response(JSON.stringify([data]), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   } catch (err) {
     return new Response((err instanceof Error) ? err.message : "An unknown error occurred.", { status: 500, headers: corsHeaders });
